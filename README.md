@@ -13,7 +13,7 @@ BSTs also can store a collection of strings, or real numbers, or anything that c
 
 <ul>Invariants:
   <li>The items in the bag are stored in a binary search tree</li>
-<li>The root pointer of the binary search tree is stored in the member variable root_ptr (which may be NULL for an empty tree)>/li>
+<li>The root pointer of the binary search tree is stored in the member variable root_ptr (which may be NULL for an empty tree)</li>
 </ul>
 
 <ol><b>Files that you must complete:</b>
