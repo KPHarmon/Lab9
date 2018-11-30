@@ -142,3 +142,4 @@ double get_number( )
     cout << result << " has been read." << endl;
     return result;
 }
+}

@@ -246,7 +246,7 @@ namespace coen79_lab9
 			tree_clear(child);
 			
 			delete root_ptr;
-			root_ptr = NLUL;
+			root_ptr = NULL;
         }
     }
     
@@ -263,8 +263,8 @@ namespace coen79_lab9
         else
         {
             l_ptr = tree_copy(root_ptr -> left());
-			r_ptr = tree_copy(root_ptr->right());
-			return new binary_tree_node<Item>(root_ptr->data, l_ptr, r_ptr);
+			r_ptr = tree_copy(root_ptr -> right());
+			return new binary_tree_node<Item>(root_ptr->data(), l_ptr, r_ptr);
         }
     }
     
@@ -276,7 +276,7 @@ namespace coen79_lab9
         if (node_ptr == NULL)
             return 0;
         else
-            tree_size(tree_size(node_ptr->left()) + tree_size(node_ptr->right()));
+			return(tree_size(node_ptr->left()) + tree_size(node_ptr->right()) + 1);
     }
 }
 

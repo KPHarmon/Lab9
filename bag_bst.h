@@ -123,7 +123,7 @@ namespace coen79_lab9
     // removed, and root_ptr now points to the root of the new (smaller)
     // binary search tree. The reference parameter, removed, has been set
     // to a copy of the removed item.
-    {
+	{
         binary_tree_node<Item> *oldroot_ptr;
         
         assert(root_ptr != NULL);
@@ -132,7 +132,11 @@ namespace coen79_lab9
             bst_remove_max(root_ptr->right( ), removed);
         else
         {
-            // STUDENT WORK
+		
+			removed = root_ptr->data();
+			oldroot_ptr = root_ptr;
+			root_ptr = root_ptr->left();
+			delete oldroot_ptr;
         }
     }
     
@@ -156,30 +160,30 @@ namespace coen79_lab9
         
         if (target < root_ptr->data( ))
         {   // Continue looking in the left subtree
-            
-            // STUDENT WORK
-            
+            return bst_remove(root_ptr->left(), target);
+
         }
         
         if (target > root_ptr->data( ))
         {   // Continue looking in the right subtree
             
-            // STUDENT WORK
+            return bst_remove(root_ptr->right(), target);
         }
         
         // Target found
         if (root_ptr->left( ) == NULL)
         {   // Target was found and there is no left subtree, so we can
             // remove this node, making the right child be the new root.
-
-            // STUDENT WORK
-        }
+		
+			root_ptr = root_ptr->right();
+			return true;
+		}
         
         // If code reaches this point, then we must remove the target from
         // the current node. We'll actually replace this target with the
         // maximum item of left subtree.
 
-        // STUDENT WORK
+        bst_remove_max(root_ptr->left(), root_ptr->data());
         
         return true;
     }
@@ -203,22 +207,23 @@ namespace coen79_lab9
         
         if (target < root_ptr->data( ))
         {   // Continue looking in the left subtree
-            
-            // STUDENT WORK
+            return bst_remove_all(root_ptr->left(), target);
             
         }
         
         if (target > root_ptr->data( ))
         {   // Continue looking in the right subtree
             
-            // STUDENT WORK
+            return bst_remove_all(root_ptr->right(), target);
         }
         
         if (root_ptr->left( ) == NULL)
         {   // Target was found and there is no left subtree, so we can
             // remove this node, making the right child be the new root.
-
-            // STUDENT WORK
+			oldroot_ptr = root_ptr;
+			root_ptr = root_ptr->right();
+			delete oldroot_ptr;
+			return 1;
         }
         
         // If code reaches this point, then we must remove the target from
@@ -229,7 +234,7 @@ namespace coen79_lab9
         // the maximum element that we moved up from our left subtree
         // might also be a copy of the target).
         
-        // STUDENT WORK
+		bst_remove_max(root_ptr->left(), root_ptr->data());
         
         return 1 + bst_remove_all(root_ptr, target);
     }
@@ -250,11 +255,11 @@ namespace coen79_lab9
     bag<Item>::bag(const bag<Item>& source)
     // Library facilities used: bintree.h
     {
-        // STUDENT WORK
+        binary_tree_node<Item>* temp = tree_copy(source.root_ptr);
+		root_ptr = temp;
     }
     
     
-
     template <class Item>
     bag<Item>::~bag( )
     // Header file used: bintree.h
@@ -295,16 +300,22 @@ namespace coen79_lab9
         {
             if (cursor->data( ) >= entry)
             {   // Go left
-                
-                // STUDENT WORK
-                
+				if(cursor->left() == NULL){
+					cursor->set_left(new binary_tree_node<Item>(entry));
+					done = true;
+				}else{
+					cursor = cursor->left();
+				}
             }
             else
             {   // Go right
-
-                // STUDENT WORK
-                
-            }
+               	if(cursor->right() == NULL){
+					cursor->set_right(new binary_tree_node<Item>(entry));
+					done = true;
+				}else{
+					cursor = cursor->right();
+				}
+			}
         }   while (!done);
     }
     
@@ -322,7 +333,9 @@ namespace coen79_lab9
                 cursor = cursor->right( );
             else
             {
-                // STUDENT WORK
+				if(cursor->data() == target)
+					answer++;
+                cursor = cursor->left( );
             }
         }
         return answer;
@@ -352,7 +365,10 @@ namespace coen79_lab9
     void bag<Item>::operator =(const bag<Item>& source)
     // Header file used: bintree.h
     {
-        // STUDENT WORK
+		if(this == &source || root_ptr == source.root_ptr)
+				return;
+		tree_clear(root_ptr);
+		root_ptr = tree_copy(source.root_ptr);    
     }
     
     
@@ -361,7 +377,8 @@ namespace coen79_lab9
     {
         if (root_ptr == addend.root_ptr)
         {
-            // STUDENT WORK
+            bag<Item> copy = addend;
+			insert_all(copy.root_ptr);
         }
         else
             insert_all(addend.root_ptr);
@@ -371,8 +388,12 @@ namespace coen79_lab9
     template <class Item>
     bag<Item> operator +(const bag<Item>& b1, const bag<Item>& b2)
     {
-        // STUDENT WORK
-    }
+		bag<Item>* temp;
+		temp += b1;
+		temp += b2;
+		return temp;
+   
+   	}
     
     
     template <class Item>
@@ -386,10 +407,11 @@ namespace coen79_lab9
     {
         if (addroot_ptr != NULL)
         {
-            // STUDENT WORK
-        }
-    }
+			insert(addroot_ptr->data());
+            insert_all(addroot_ptr->left());
+			insert_all(addroot_ptr->right());
+		}
 
+	}
 }
-
 #endif
